@@ -1,0 +1,5 @@
+- name: Restart local daemons
+  service:
+    name: "{{ item }}"
+    state: restarted
+  loop: "{{ local_daemons }}"

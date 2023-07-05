@@ -1,0 +1,8 @@
+- name: Set default value for virt_module 
+  import_tasks: set_facts.yaml
+
+- name: Set yum repo
+  import_tasks: set_repo.yaml
+
+- name: Install virt packages
+  import_tasks: install_pkgs.yaml

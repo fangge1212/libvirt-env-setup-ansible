@@ -1,0 +1,22 @@
+- name: Generate SSH key
+  community.crypto.openssh_keypair:
+    path: /root/.ssh/id_rsa
+    type: rsa
+    size: 4096
+    state: present
+    force: no
+
+- name: Fetch the key file
+  ansible.builtin.fetch:
+    src: "/root/.ssh/id_rsa.pub"
+    dest: "buffer/{{ ansible_fqdn }}-id_rsa.pub"
+    fail_on_missing: yes
+    flat: yes
+
+- name: Copy SSH public key to migration peer host
+  ansible.posix.authorized_key:
+    user: root
+    state: present
+    key: "{{ lookup('file', 'buffer/{{ item }}-id_rsa.pub') }}"
+  when: item != ansible_fqdn
+  loop: "{{ groups['migrationhosts'] }}"

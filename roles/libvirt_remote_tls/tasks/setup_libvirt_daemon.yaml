@@ -1,0 +1,12 @@
+- name: Stop libvirt remote daemon
+  ansible.builtin.service:
+    name: "{{ remote_daemon }}"
+    enabled: true
+    state: stopped
+
+- name: Start tls socket
+  ansible.builtin.service:
+    name: "{{ remote_tls_socket }}"
+    enabled: true
+    state: started
+  notify: Restart remote daemon

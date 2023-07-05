@@ -1,0 +1,4 @@
+#daemon_mode can be set to:
+#  modular, default value for RHEL9
+#  monolithic, default value for RHEL8
+#daemon_mode: modular

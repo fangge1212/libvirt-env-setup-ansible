@@ -1,0 +1,24 @@
+- name: Reset virt module for RHEL8 host
+  shell: "yum module reset virt -y"
+  when: ansible_distribution_major_version == "8"
+
+- name: Install virt rhel module for RHEL8 host
+  shell: "yum module install virt:rhel -y; yum module update virt:rhel -y"
+  when: 
+    - ansible_distribution_major_version == "8"
+    - '"rhel" in virt_module'
+
+- name: Install virt av module for RHEL8 host
+  shell: "yum module install virt:av -y; yum module update virt:av -y"
+  when: 
+    - ansible_distribution_major_version == "8"
+    - '"av" in virt_module'
+
+- name: Ensure latest pkgs required for testing are installed
+  ansible.builtin.yum:
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - virt-install
+    - libvirt-*
+    - qemu-kvm

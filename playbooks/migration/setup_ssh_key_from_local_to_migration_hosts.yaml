@@ -1,0 +1,26 @@
+- name: Setup SSH on localhost
+  hosts: localhost
+  tasks:
+    - name: Set known_hosts
+      ansible.builtin.known_hosts:
+        path: ~/.ssh/known_hosts
+        name: '{{ item }}'
+        state: absent
+      loop: "{{ groups['migrationhosts'] }}"
+
+    - name: Generate SSH key
+      community.crypto.openssh_keypair:
+        path: ~/.ssh/id_rsa
+        type: rsa
+        size: 4096
+        state: present
+        force: no
+
+- name: Copy SSH public key from localhost to remote hosts
+  hosts: migrationhosts
+  tasks:
+    - name: Copy SSH public key to remote host
+      ansible.posix.authorized_key:
+        user: root
+        state: present
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"

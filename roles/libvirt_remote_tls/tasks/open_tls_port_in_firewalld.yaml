@@ -1,0 +1,12 @@
+- name: Get Firewalld Service Status
+  ansible.builtin.systemd:
+    name: "firewalld"
+  register: firewalld_status
+
+- name: Open libvirt tls port in firewalld when firewalld is active
+  firewalld:
+    port: 16514/tcp
+    permanent: yes
+    state: enabled
+    immediate: yes
+  when: firewalld_status.status.ActiveState == 'active'

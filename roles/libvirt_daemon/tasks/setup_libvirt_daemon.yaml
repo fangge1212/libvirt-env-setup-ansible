@@ -1,0 +1,6 @@
+- name: Start libvirt daemon sockets
+  ansible.builtin.service:
+    name: "{{ item }}"
+    enabled: true
+    state: started
+  loop: "{{ local_sockets }}"

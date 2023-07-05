@@ -1,0 +1,16 @@
+- name: Add libvirt-ci repository
+  ansible.builtin.yum_repository:
+    name: libvirt-ci
+    description: libvirt CI YUM repo
+    file: libvirt_ci_repo
+    baseurl: http://dell-per740-36.lab.eng.pek2.redhat.com/libvirt-CI-repos/RHEL/{{ ansible_distribution_version }}/$basearch/
+    gpgcheck: no
+
+- name: Add libvirt-ci virt module repository
+  ansible.builtin.yum_repository:
+    name: libvirt-ci-virt-module
+    description: libvirt CI virt module YUM repo
+    file: libvirt_ci_virt_module_repo
+    baseurl: http://dell-per740-36.lab.eng.pek2.redhat.com/libvirt-CI-repos/RHEL/{{ ansible_distribution_version }}/{{ virt_module }}/$basearch/
+    gpgcheck: no
+  when: ansible_distribution_major_version == "8"

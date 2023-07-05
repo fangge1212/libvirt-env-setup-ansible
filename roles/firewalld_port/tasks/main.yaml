@@ -1,0 +1,12 @@
+- name: Get Firewalld Service Status
+  ansible.builtin.systemd:
+    name: "firewalld"
+  register: firewalld_status
+
+- name: Enable/disable port in firewalld if firewalld is active
+  ansible.posix.firewalld:
+    port: "{{ port }}/{{ protocol }}"
+    permanent: yes
+    state: "{{ state }}"
+    immediate: yes
+  when: firewalld_status.status.ActiveState == 'active'

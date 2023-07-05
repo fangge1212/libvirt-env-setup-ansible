@@ -1,0 +1,14 @@
+- name: Install latest python3-pip
+  ansible.builtin.yum:
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - python3-pip
+
+- name: Install cryptography package
+  ansible.builtin.pip:
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - pip
+    - cryptography

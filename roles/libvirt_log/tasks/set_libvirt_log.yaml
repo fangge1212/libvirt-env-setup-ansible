@@ -1,0 +1,23 @@
+- name: Set log_level for libvirt daemons
+  ansible.builtin.lineinfile:
+    path: /etc/libvirt/{{ item }}.conf
+    regexp: '^log_level'
+    line: log_level={{ log_level }}
+  loop: "{{ local_daemons }}"
+  notify: Restart local daemons
+
+- name: Set log_filters for libvirt daemons
+  ansible.builtin.lineinfile:
+    path: /etc/libvirt/{{ item }}.conf
+    regexp: '^log_filters'
+    line: log_filters="{{ log_filters }}"
+  loop: "{{ local_daemons }}"
+  notify: Restart local daemons
+
+- name: Set log_outputs for libvirt daemon
+  ansible.builtin.lineinfile:
+    path: /etc/libvirt/{{ item }}.conf
+    regexp: '^log_outputs'
+    line: log_outputs="1:file:{{ log_dir }}{{ item }}.log 3:syslog:{{ item }}"
+  loop: "{{ local_daemons }}"
+  notify: Restart local daemons

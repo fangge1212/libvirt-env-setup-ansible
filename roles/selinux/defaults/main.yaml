@@ -1,0 +1,2 @@
+#selinux_state sets the selinux mode
+selinux_state: enforcing

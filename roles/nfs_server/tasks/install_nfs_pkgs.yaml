@@ -1,0 +1,4 @@
+- name: Install nfs pkgs
+  yum:
+    name: nfs-utils
+    state: latest

@@ -1,0 +1,8 @@
+- name: Install nfs pkgs
+  import_tasks: install_nfs_pkgs.yaml
+
+- name: Start nfs server
+  import_tasks: start_nfs_server.yaml
+
+- name: Enable nfs in firewalld if firewalld is active
+  import_tasks: enable_nfs_in_firewalld.yaml

@@ -1,0 +1,66 @@
+---
+- name: Setup SSH key from localhost to migration hosts
+  ansible.builtin.import_playbook: setup_ssh_key_from_local_to_migration_hosts.yaml
+
+- name: Setup migration test env
+  hosts: migrationhosts
+  tasks:
+    - name: Start firewalld service
+      include_role:
+        name: ../../roles/firewalld_service
+
+    - name: Set selinux to enforcing mode
+      include_role:
+        name: ../../roles/selinux
+
+    - name: Install virt packages
+      include_role:
+        name: ../../roles/install_virt_pkgs
+
+    - name: Start libvirt daemons
+      include_role:
+        name: ../../roles/libvirt_daemon
+
+    - name: Configure libvirt log
+      include_role:
+        name: ../../roles/libvirt_log
+
+    - name: Setup libvirt remote access tcp connection
+      include_role:
+        name: ../../roles/libvirt_remote_tcp
+      vars:
+        auth_tcp: none
+
+    - name: Setup libvirt remote access tls connection
+      include_role:
+        name: ../../roles/libvirt_remote_tls
+
+    - name: Setup qemu tls X509 certs
+      include_role:
+        name: ../../roles/qemu_tls_certs
+
+    - name: Open migration port in firewalld
+      include_role:
+        name: ../../roles/firewalld_port
+      vars:
+        port: 49152-49215
+        state: enabled
+
+    - name: Setup SSH key on migration hosts
+      include_tasks: setup_ssh_key_on_migration_hosts.yaml
+
+- name: Setup nfs server
+  hosts: nfsserver
+  tasks:
+    - name: Setup nfs server
+      include_role:
+        name: ../../roles/nfs_server
+
+- name: Setup nfs client
+  hosts: migrationhosts
+  tasks:
+    - name: Setup nfs client
+      include_role:
+        name: ../../roles/nfs_client
+      vars:
+        nfs_server: "{{ groups['nfsserver'][0] }}"

@@ -1,0 +1,14 @@
+- name: Set daemon_mode per host version
+  import_tasks: set_facts.yaml
+
+- name: Install dependencies for generating X509 certs
+  import_tasks: install_dependencies.yaml
+
+- name: Generate X509 certs
+  import_tasks: generate_certs.yaml
+
+- name: Setup libvirt daemon
+  import_tasks: setup_libvirt_daemon.yaml
+
+- name: Open tls port in firewalld if firewalld is active
+  import_tasks: open_tls_port_in_firewalld.yaml

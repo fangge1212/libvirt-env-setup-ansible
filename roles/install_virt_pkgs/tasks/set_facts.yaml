@@ -1,0 +1,13 @@
+- name: Set default virt_module for RHEL>=8.6 host
+  ansible.builtin.set_fact:
+    virt_module: Latest-virt-rhel
+  when:
+    - virt_module is not defined
+    - ansible_distribution_version | float >= 8.6
+
+- name: Set default virt_module for RHEL<8.6 host
+  ansible.builtin.set_fact:
+    virt_module: Latest-virt-av
+  when:
+    - virt_module is not defined
+    - ansible_distribution_version | float < 8.6

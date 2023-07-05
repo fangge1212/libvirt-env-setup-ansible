@@ -1,0 +1,5 @@
+- name: Start firewalld service
+  service:
+    name: firewalld
+    enabled: true
+    state: "{{ firewalld_state }}"

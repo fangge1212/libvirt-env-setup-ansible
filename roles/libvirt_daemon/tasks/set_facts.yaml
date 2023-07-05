@@ -1,0 +1,37 @@
+- name: Set daemon mode for RHEL8 host
+  ansible.builtin.set_fact:
+    daemon_mode: monolithic
+  when:
+    - daemon_mode is not defined
+    - ansible_distribution_major_version == "8"
+
+- name: Set daemon mode for RHEL9 host
+  ansible.builtin.set_fact:
+    daemon_mode: modular
+  when:
+    - daemon_mode is not defined
+    - ansible_distribution_major_version == "9"
+
+- name: Set daemon variables when daemon_mode='monolithic'
+  ansible.builtin.set_fact:
+    local_daemons:
+      - libvirtd
+    local_sockets:
+      - libvirtd.socket
+  when:
+    - daemon_mode == 'monolithic'
+
+- name: Set daemon variables when daemon_mode='modular'
+  ansible.builtin.set_fact:
+    local_daemons:
+      - virtqemud
+      - virtnetworkd
+      - virtstoraged
+      - virtsecretd
+    local_sockets:
+      - virtqemud.socket
+      - virtnetworkd.socket
+      - virtstoraged.socket
+      - virtsecretd.socket
+  when:
+    - daemon_mode == "modular"

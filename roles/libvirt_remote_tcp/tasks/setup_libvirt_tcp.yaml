@@ -1,0 +1,32 @@
+- name: Stop libvirt remote daemon
+  ansible.builtin.service:
+    name: "{{ remote_daemon }}"
+    enabled: true
+    state: stopped
+
+- name: Start libvirt tcp socket
+  ansible.builtin.service:
+    name: "{{ remote_tcp_socket }}"
+    enabled: true
+    state: started
+  notify: Restart remote daemon
+
+- name: Set auth_tcp for remote libvirt daemon
+  ansible.builtin.lineinfile:
+    path: /etc/libvirt/{{ remote_daemon }}.conf
+    regexp: '^auth_tcp'
+    line: auth_tcp='{{ auth_tcp }}'
+  notify: Restart remote daemon
+
+- name: Get Firewalld Service Status
+  ansible.builtin.systemd:
+    name: "firewalld"
+  register: firewalld_status
+
+- name: Open libvirt tcp port in firewalld when firewalld is active
+  firewalld:
+    port: 16509/tcp
+    permanent: yes
+    state: enabled
+    immediate: yes
+  when: firewalld_status.status.ActiveState == 'active'

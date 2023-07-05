@@ -1,0 +1,16 @@
+- name: Setup nfs client
+  hosts: nfsclients
+  tasks:
+    - name: Setup nfs client
+      include_role:
+        name: ../role.nfs_client
+      vars:
+        nfs_server: nfs_server.example.com
+        nfs_src_dir: /nfs-server/
+        nfs_mnt_point: /nfs/
+    # NOTE:
+    # - This is equal to "mount nfs_server.example.com:/nfs-server/ /nfs/"
+    # - Param nfs_server is required
+    # - Param nfs_src_dir is optional, default value is /nfs-server
+    # - Param nfs_mnt_point is optional, default value is /nfs
+

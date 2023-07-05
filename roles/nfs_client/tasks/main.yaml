@@ -1,0 +1,29 @@
+- name: Install nfs pkgs
+  yum:
+    name: nfs-utils
+    state: latest
+
+- name: Create nfs mount directory
+  file:
+    path: "{{ nfs_mnt_point }}"
+    state: directory
+    mode: 0777
+
+- name: Mount the nfs dir 
+  mount:
+    fstype: nfs
+    opts: soft,timeo=100,retrans=3
+    state: mounted
+    src: "{{ nfs_server }}:{{ nfs_src_dir }}"
+    path: "{{ nfs_mnt_point }}"
+
+- name: Get Selinux Status
+  shell: getenforce
+  register: selinux_status
+
+- name: Set SELinux boolean value of virt_use_nfs when Selinux is Enforcing
+  ansible.posix.seboolean:
+    name: virt_use_nfs
+    state: yes
+    persistent: yes
+  when: selinux_status == 'Enforcing'

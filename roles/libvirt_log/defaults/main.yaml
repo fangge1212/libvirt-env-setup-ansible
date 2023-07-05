@@ -1,0 +1,4 @@
+log_level: 1
+log_filters: 1:*
+#log_dir: The directory to store log files
+log_dir: /var/log/libvirt/

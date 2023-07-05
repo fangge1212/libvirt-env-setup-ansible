@@ -1,0 +1,4 @@
+#firewalld: set firewalld status, valid values:
+#  started
+#  stopped
+firewalld_state: started

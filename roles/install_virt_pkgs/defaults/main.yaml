@@ -1,0 +1,5 @@
+#virt_module can be set to:
+#  Latest-virt-rhel, default value for RHEL>=8.6
+#  Latest-virt-av, default value for RHEL<8.6
+#  Specific module, e.g. module-virt-rhel-8070020220304113212-3b9f49c4
+#virt_module: Latest-virt-rhel

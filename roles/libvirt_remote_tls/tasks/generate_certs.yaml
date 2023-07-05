@@ -1,0 +1,87 @@
+- name: Generate an OpenSSL private CA key
+  community.crypto.openssl_privatekey_pipe:
+  run_once: true
+  register: ca_key
+  delegate_to: localhost
+
+- name: Generate certificate signing request(CSR) for CA certificate
+  community.crypto.openssl_csr_pipe:
+    privatekey_content: "{{ ca_key.privatekey }}"
+    common_name: Ansible CA
+    basic_constraints:
+      - 'CA:TRUE'
+    basic_constraints_critical: yes
+    key_usage:
+      - keyCertSign
+    key_usage_critical: true
+  register: ca_csr
+
+- name: Create a self-signed CA certificate
+  community.crypto.x509_certificate_pipe:
+    privatekey_content: "{{ ca_key.privatekey }}"
+    csr_content: "{{ ca_csr.csr }}"
+    provider: selfsigned
+  run_once: true
+  register: ca_cert
+  delegate_to: localhost
+
+- name: Create tls cert dir
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0777
+  loop:
+    - "{{ key_dir }}"
+    - "{{ cert_dir }}"
+    - "{{ ca_dir }}"
+
+- name: Copy CA key to all hosts
+  ansible.builtin.copy:
+    dest: "{{ ca_dir }}/cakey.pem"
+    content: "{{ ca_key.privatekey }}"
+    mode: '0666'
+
+- name: Copy CA certificate to all hosts
+  ansible.builtin.copy:
+    dest: "{{ ca_dir }}/cacert.pem"
+    content: "{{ ca_cert.certificate }}"
+    mode: '0666'
+
+- name: Generate an OpenSSL private server/client key
+  community.crypto.openssl_privatekey:
+    path: "{{ key_dir }}/{{ item }}key.pem"
+    mode: 0666
+  loop:
+    - client
+    - server
+
+- name: Generate an OpenSSL server/client Certificate Signing Request
+  community.crypto.openssl_csr:
+    path: "{{ key_dir }}/{{ item }}key.csr"
+    privatekey_path: "{{ key_dir }}/{{ item }}key.pem"
+    common_name: "{{ ansible_fqdn }}"
+    country_name: CN
+    state_or_province_name: BeiJing
+    organization_name: RedHat
+    keyUsage:
+      - digitalSignature
+    extended_key_usage:
+      - "{{ item }}Auth"
+  loop:
+    - client
+    - server
+
+- name: Generate an OpenSSL certificate signed with your own CA certificate
+  community.crypto.x509_certificate:
+    path: "{{ cert_dir }}/{{ item }}cert.pem"
+    privatekey_path: "{{ key_dir }}/{{ item }}key.pem"
+    csr_path: "{{ key_dir }}/{{ item }}key.csr"
+    ownca_path: "{{ ca_dir }}/cacert.pem"
+    ownca_privatekey_path: "{{ ca_dir }}/cakey.pem"
+    provider: ownca
+    mode: 0666
+    force: yes
+    backup: yes
+  loop:
+    - client
+    - server

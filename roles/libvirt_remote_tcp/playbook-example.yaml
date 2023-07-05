@@ -1,0 +1,10 @@
+- name: Setup libvirt tcp remote access env
+  hosts: testservers
+  tasks:
+    - name: Setup libvirt tcp remote access env
+      include_role:
+        name: ../role.libvirt_remote_tcp
+    # vars:
+    #  auth_tcp: optional
+    #  daemon_mode: optional
+    # See defaults/main.yaml to learn the default values of vars

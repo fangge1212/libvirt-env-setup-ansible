@@ -1,0 +1,19 @@
+- name: Create nfs mount source dir
+  file:
+    path: "{{ nfs_src_dir }}"
+    state: directory
+    mode: 0777
+
+- name: Copy exports file
+  template:
+    src: exports.j2
+    dest: /etc/exports
+
+- name: Start nfs service
+  service:
+    name: nfs-server
+    enabled: true
+    state: started
+
+- name: Reload nfs exports file
+  shell: exportfs -r

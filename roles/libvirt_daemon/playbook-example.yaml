@@ -1,0 +1,6 @@
+- name: Setup libvirt daemons
+  hosts: testservers
+  tasks:
+    - name: Setup libvirt daemons
+      include_role:
+        name: ../role.libvirt_daemon

@@ -1,0 +1,5 @@
+- name: Set daemon_mode per host version
+  import_tasks: set_facts.yaml
+
+- name: Set libvirt log
+  import_tasks: set_libvirt_log.yaml
