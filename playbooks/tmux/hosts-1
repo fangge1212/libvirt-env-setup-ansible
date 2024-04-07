@@ -1,9 +1,0 @@
-[servers]
-dell-per750-04.lab.eng.pek2.redhat.com
-dell-per750-03.lab.eng.pek2.redhat.com
-dell-per740-79.lab.eng.pek2.redhat.com
-dell-per740-78.lab.eng.pek2.redhat.com
-
-[all:vars]
-ansible_connection=ssh
-ansible_user=root
