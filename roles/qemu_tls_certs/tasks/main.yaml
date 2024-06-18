@@ -60,7 +60,7 @@
   community.crypto.openssl_csr:
     path: "{{ tls_cert_dir }}/{{ item }}-key.csr"
     privatekey_path: "{{ tls_cert_dir }}/{{ item }}-key.pem"
-    common_name: "{{ ansible_fqdn }}"
+    common_name: "{{ ansible_nodename }}"
     country_name: CN
     state_or_province_name: BeiJing
     organization_name: RedHat

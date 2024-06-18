@@ -9,7 +9,7 @@
 - name: Fetch the key file
   ansible.builtin.fetch:
     src: "/root/.ssh/id_rsa.pub"
-    dest: "buffer/{{ ansible_fqdn }}-id_rsa.pub"
+    dest: "buffer/{{ ansible_nodename }}-id_rsa.pub"
     fail_on_missing: yes
     flat: yes
 
