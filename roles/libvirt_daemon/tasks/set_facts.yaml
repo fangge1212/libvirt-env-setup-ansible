@@ -10,7 +10,7 @@
     daemon_mode: modular
   when:
     - daemon_mode is not defined
-    - ansible_distribution_major_version == "9"
+    - ansible_distribution_major_version | int >= 9
 
 - name: Set daemon variables when daemon_mode='monolithic'
   ansible.builtin.set_fact:
