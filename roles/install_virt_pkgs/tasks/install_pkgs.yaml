@@ -20,5 +20,5 @@
     state: latest
   loop:
     - virt-install
-    - libvirt-*
+    - libvirt
     - qemu-kvm
